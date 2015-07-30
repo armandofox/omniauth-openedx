@@ -20,25 +20,36 @@ describe OmniAuth::Strategies::OpenEdX do
     )
   end
 
+  def raw_info_hash
+    {
+      'name' => 'John Smith',
+      'email' => 'smith@example.com'
+    }
+  end
+
   subject do
     OmniAuth::Strategies::OpenEdX.new({})
   end
 
   before(:each) do
-    subject.stub!(:access_token).and_return(access_token)
+    subject.stub(:access_token).and_return(access_token)
   end
 
   context 'client options' do
+    it 'should have correct provider name' do
+      expect(subject.options.name).to eq('edx')
+    end
+
     it 'should have correct site' do
-      subject.options.client_options.site.should eq('https://accounts.edx.org')
+      subject.options.client_options.site.should eq('https://courses.edx.org/oauth2/login')
     end
 
     it 'should have correct authorize url' do
-      subject.options.client_options.authorize_url.should eq('https://accounts.edx.org/oauth2/v1/auth')
+      subject.options.client_options.authorize_url.should eq('https://courses.edx.org/oauth2/authorize')
     end
 
     it 'should have correct token url' do
-      subject.options.client_options.token_url.should eq('https://accounts.edx.org/oauth2/v1/token')
+      subject.options.client_options.token_url.should eq('https://courses.edx.org/oauth2/access_token')
     end
 
     describe 'should be overrideable' do
@@ -57,8 +68,20 @@ describe OmniAuth::Strategies::OpenEdX do
   end
 
   context '#raw_info' do
+    before do
+      allow(subject).to receive(:raw_info).and_return(raw_info_hash)
+    end
+
+    it 'should return user name' do
+      expect(subject.info[:name]).to eq(raw_info_hash['name'])
+    end
+
+    it 'should return user email' do
+      expect(subject.info[:email]).to eq(raw_info_hash['email'])
+    end
+
     it 'should use relative paths' do
-      access_token.should_receive(:get).with('https://api.edx.org/api/externalBasicProfiles.v1?q=me').and_return(response)
+      access_token.should_receive(:get).with('https://courses.edx.org/oauth2/user_info').and_return(response)
       subject.raw_info.should eq(parsed_response)
     end
   end
