@@ -37,6 +37,26 @@ module OmniAuth
         @raw_info ||= access_token.get('https://courses.edx.org/oauth2/user_info').parsed
       end
 
+      def redirect_params
+        if options.key?(:callback_path) || OmniAuth.config.full_host
+          {:redirect_uri => callback_url}
+        else
+          {}
+        end
+      end
+
+      def token_params
+       params = super.to_hash(:symbolize_keys => true) \
+          .merge(:headers => { 'Authorization' => "Bearer #{client.secret}" })
+
+        redirect_params.merge(params)
+      end
+
+      def build_access_token
+        auth_code = request.params['code']
+        client.auth_code.get_token(auth_code, token_params)
+      end
+
       def callback_phase
         with_authorization_code! do
           super
