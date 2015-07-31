@@ -36,6 +36,24 @@ module OmniAuth
         access_token.options[:mode] = :query
         @raw_info ||= access_token.get('https://courses.edx.org/oauth2/user_info').parsed
       end
+
+      def callback_phase
+        with_authorization_code! do
+          super
+        end
+      rescue NoAuthorizationCodeError => e
+        fail(:no_authorization_code, e)
+      end
+
+      private
+
+      def with_authorization_code! 
+        if request.params.key?('code')
+          yield
+        else
+          raise NoAuthorizationCodeError
+        end
+      end
     end
   end
 end
