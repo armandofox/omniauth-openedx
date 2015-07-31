@@ -37,7 +37,7 @@ describe OmniAuth::Strategies::OpenEdX do
 
   context 'client options' do
     it 'should have correct provider name' do
-      expect(subject.options.name).to eq('edx')
+      expect(subject.options.name).to eq('openedx')
     end
 
     it 'should have correct site' do
