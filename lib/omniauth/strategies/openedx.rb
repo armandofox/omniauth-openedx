@@ -11,6 +11,8 @@ module OmniAuth
           token_url: 'https://courses.edx.org/oauth2/access_token'
       }
 
+      option :scope, 'profile'
+
       def request_phase
         super
       end
