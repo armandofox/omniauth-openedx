@@ -6,9 +6,9 @@ module OmniAuth
       option :name, 'openedx'
 
       option :client_options, {
-          site: 'http://e0d-berkeley.sandbox.edx.org/oauth2/login',
-          authorize_url: 'http://e0d-berkeley.sandbox.edx.org/oauth2/authorize',
-          token_url: 'http://e0d-berkeley.sandbox.edx.org/oauth2/access_token'
+          site: 'https://e0d-berkeley.sandbox.edx.org/oauth2/login',
+          authorize_url: 'https://e0d-berkeley.sandbox.edx.org/oauth2/authorize',
+          token_url: 'https://e0d-berkeley.sandbox.edx.org/oauth2/access_token'
       }
 
       option :scope, 'profile'
