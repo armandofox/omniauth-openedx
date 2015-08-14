@@ -3,7 +3,7 @@ require 'omniauth-oauth2'
 module OmniAuth
   module Strategies
     class OpenEdX < OmniAuth::Strategies::OAuth2
-      DEFAULT_SCOPE = 'read'
+      DEFAULT_SCOPE = 'profile'
 
       option :name, 'openedx'
 
@@ -48,7 +48,7 @@ module OmniAuth
       end
 
       def token_params
-       params = super.to_hash(:symbolize_keys => true) \
+        params = super.to_hash(:symbolize_keys => true) \
           .merge(:headers => { 'Authorization' => "Bearer #{client.secret}" })
 
         redirect_params.merge(params)
