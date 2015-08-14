@@ -3,6 +3,8 @@ require 'omniauth-oauth2'
 module OmniAuth
   module Strategies
     class OpenEdX < OmniAuth::Strategies::OAuth2
+      DEFAULT_SCOPE = 'read'
+
       option :name, 'openedx'
 
       option :client_options, {
@@ -11,7 +13,7 @@ module OmniAuth
           token_url: 'https://e0d-berkeley.sandbox.edx.org/oauth2/access_token'
       }
 
-      option :scope, 'profile'
+      option :authorize_options, [:scope]
 
       def request_phase
         super
@@ -23,8 +25,6 @@ module OmniAuth
         {
           name: raw_info['name'],
           email: raw_info['email'],
-          first_name: raw_info['first_name'],
-          last_name: raw_info['last_name']
         }
       end
 
@@ -36,7 +36,7 @@ module OmniAuth
 
       def raw_info
         access_token.options[:mode] = :query
-        @raw_info ||= access_token.get('https://courses.edx.org/oauth2/user_info').parsed
+        @raw_info ||= access_token.get('https://e0d-berkeley.sandbox.edx.org/oauth2/user_info').parsed
       end
 
       def redirect_params
@@ -65,6 +65,18 @@ module OmniAuth
         end
       rescue NoAuthorizationCodeError => e
         fail(:no_authorization_code, e)
+      end
+
+      def authorize_params
+        super.tap do |params|
+          %w[scope].each do |v|
+            if request.params[v]
+              params[v.to_sym] = request.params[v]
+            end
+          end
+
+          params[:scope] ||= DEFAULT_SCOPE
+        end
       end
 
       private
