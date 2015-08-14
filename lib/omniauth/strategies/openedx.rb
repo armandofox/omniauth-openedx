@@ -6,9 +6,9 @@ module OmniAuth
       option :name, 'openedx'
 
       option :client_options, {
-          site: 'https://courses.edx.org/oauth2/login',
-          authorize_url: 'https://courses.edx.org/oauth2/authorize',
-          token_url: 'https://courses.edx.org/oauth2/access_token'
+          site: 'http://e0d-berkeley.sandbox.edx.org/oauth2/login',
+          authorize_url: 'http://e0d-berkeley.sandbox.edx.org/oauth2/authorize',
+          token_url: 'http://e0d-berkeley.sandbox.edx.org/oauth2/access_token'
       }
 
       option :scope, 'profile'
